@@ -1,0 +1,35 @@
+allprojects {
+  repositories {
+    jcenter()
+  }
+}
+
+ext {
+
+  // Android SDK and tools
+  androidBuildToolsVersion = "25.0.2"
+  androidMinSdkVersion = 19
+  androidTargetSdkVersion = 25
+  androidCompileSdkVersion = 25
+
+  // Development dependencies
+  supportVersion = '25.3.1'
+  constraintLayoutVersion = '1.0.0-beta4'
+
+  // Testing dependencies
+  jUnitVersion = '4.12'
+
+  presentationDependencies = [appCompatV7     : "com.android.support:appcompat-v7:${supportVersion}",
+                              constraintLayout: "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
+                              design          : "com.android.support:design:${supportVersion}"]
+
+  presentationTestDependencies = []
+
+  domainDependencies = []
+
+  domainTestDependencies = []
+
+  dataDependencies = []
+
+  dataTestDependencies = [junit: "junit:junit:${jUnitVersion}"]
+}
