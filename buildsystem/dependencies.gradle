@@ -15,21 +15,61 @@ ext {
   // Development dependencies
   supportVersion = '25.3.1'
   constraintLayoutVersion = '1.0.0-beta4'
+  daggerVersion = '2.0.2'
+  javaxAnnotationVersion = '1.0'
+  javaxGlassfish = '10.0-b28'
+  rxJavaVersion = '2.0.2'
+  rxAndroidVersion = '2.0.1'
+  gsonVersion = '2.3'
+  okHttpVersion = '3.5.0'
+  androidAnnotationsVersion = '21.0.3'
+  retrofitVersion = '2.2.0'
+  loggingInterceptorVersion = '3.5.0'
+  butterknifeVersion = '8.2.1'
+  arrowVersion = '1.0.0'
 
   // Testing dependencies
+  robolectricVersion = '3.1.2'
   jUnitVersion = '4.12'
+  assertJVersion = '1.7.1'
+  mockitoVersion = '1.10.19'
 
-  presentationDependencies = [appCompatV7     : "com.android.support:appcompat-v7:${supportVersion}",
-                              constraintLayout: "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
-                              design          : "com.android.support:design:${supportVersion}"]
+  presentationDependencies = [appCompatV7        : "com.android.support:appcompat-v7:${supportVersion}",
+                              constraintLayout   : "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}",
+                              design             : "com.android.support:design:${supportVersion}",
+                              butterknife        : "com.jakewharton:butterknife:${butterknifeVersion}",
+                              butterknifeCompiler: "com.jakewharton:butterknife-compiler:${butterknifeVersion}", daggerCompiler: "com.google.dagger:dagger-compiler:${daggerVersion}",
+                              dagger             : "com.google.dagger:dagger:${daggerVersion}",
+                              javaxAnnotation    : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+                              rxJava             : "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+                              rxAndroid          : "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}"]
 
   presentationTestDependencies = []
 
-  domainDependencies = []
+  domainDependencies = [daggerCompiler : "com.google.dagger:dagger-compiler:${daggerVersion}",
+                        dagger         : "com.google.dagger:dagger:${daggerVersion}",
+                        javaxAnnotation: "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+                        rxJava         : "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+                        arrow          : "com.fernandocejas:arrow:${arrowVersion}"]
 
   domainTestDependencies = []
 
-  dataDependencies = []
+  dataDependencies = [retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+                      retrofitConverter : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+                      daggerCompiler    : "com.google.dagger:dagger-compiler:${daggerVersion}",
+                      dagger            : "com.google.dagger:dagger:${daggerVersion}",
+                      okHttp            : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+                      gson              : "com.google.code.gson:gson:${gsonVersion}",
+                      rxJava            : "io.reactivex.rxjava2:rxjava:${rxJavaVersion}",
+                      rxAndroid         : "io.reactivex.rxjava2:rxandroid:${rxAndroidVersion}",
+                      javaxAnnotation   : "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+                      androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
+                      retrofitAdapterRx : "com.squareup.retrofit2:adapter-rxjava2:${retrofitVersion}",
+                      okHttpLogging     : "com.squareup.okhttp3:logging-interceptor:${loggingInterceptorVersion}",
+                      glassfishJavax    : "org.glassfish:javax.annotation:${javaxGlassfish}"]
 
-  dataTestDependencies = [junit: "junit:junit:${jUnitVersion}"]
+  dataTestDependencies = [junit      : "junit:junit:${jUnitVersion}",
+                          assertj    : "org.assertj:assertj-core:${assertJVersion}",
+                          mockito    : "org.mockito:mockito-core:${mockitoVersion}",
+                          robolectric: "org.robolectric:robolectric:${robolectricVersion}"]
 }
