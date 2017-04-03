@@ -1,7 +1,7 @@
 package xyz.gonzapico.data.repository.datasource;
 
+import io.reactivex.Observable;
 import retrofit2.Response;
-import rx.Observable;
 import xyz.gonzapico.data.entity.ResponseAPIGeonames;
 
 /**
@@ -14,5 +14,6 @@ public interface GeonameDataStore {
    * Get an {@link Observable} which will emit a {@link ResponseAPIGeonames}.
    * @return {@link ResponseAPIGeonames}
    */
-  Observable<Response<ResponseAPIGeonames>> geonames();
+  Observable<Response<ResponseAPIGeonames>> geonames(String city);
+
 }

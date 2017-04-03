@@ -1,7 +1,7 @@
 package xyz.gonzapico.repository;
 
+import io.reactivex.Observable;
 import java.util.List;
-import rx.Observable;
 import xyz.gonzapico.model.GeonameModelDomain;
 
 /**
@@ -10,5 +10,5 @@ import xyz.gonzapico.model.GeonameModelDomain;
 
 public interface GeonameDomainRepository {
 
-  Observable<List<GeonameModelDomain>> getGeonames();
+  Observable<List<GeonameModelDomain>> getGeonames(String city);
 }

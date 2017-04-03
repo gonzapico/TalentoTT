@@ -6,8 +6,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import retrofit2.Response;
+import xyz.gonzapico.data.entity.Bbox;
 import xyz.gonzapico.data.entity.Geoname;
 import xyz.gonzapico.data.entity.ResponseAPIGeonames;
+import xyz.gonzapico.model.BboxModelDomain;
 import xyz.gonzapico.model.GeonameModelDomain;
 
 /**
@@ -19,7 +21,8 @@ import xyz.gonzapico.model.GeonameModelDomain;
 
   }
 
-  public List<GeonameModelDomain> transformToListOfGeonames(Response<ResponseAPIGeonames> listResponse) {
+  public List<GeonameModelDomain> transformToListOfGeonames(
+      Response<ResponseAPIGeonames> listResponse) {
     List<GeonameModelDomain> listOfGeonames = null;
     if (listResponse.isSuccessful()) {
       listOfGeonames = new ArrayList<>();
@@ -31,11 +34,26 @@ import xyz.gonzapico.model.GeonameModelDomain;
   private Collection<GeonameModelDomain> transformToGeonameModelDomainList(List<Geoname> geonames) {
     List<GeonameModelDomain> result = new ArrayList<>();
 
-    for (Geoname geoname : geonames){
+    for (Geoname geoname : geonames) {
       GeonameModelDomain geonameModelDomain = new GeonameModelDomain();
+      geonameModelDomain.setName(geoname.getName());
+      try {
+        geonameModelDomain.setBbox(transformBbox(geoname.getBbox()));
+      } catch (Exception e) {
+      }
       result.add(geonameModelDomain);
     }
     return result;
   }
 
+  private BboxModelDomain transformBbox(Bbox bbox) {
+    BboxModelDomain bboxResult = new BboxModelDomain();
+
+    bboxResult.setEast(bbox.getEast());
+    bboxResult.setNorth(bbox.getNorth());
+    bboxResult.setSouth(bbox.getSouth());
+    bboxResult.setWest(bbox.getWest());
+
+    return bboxResult;
+  }
 }
