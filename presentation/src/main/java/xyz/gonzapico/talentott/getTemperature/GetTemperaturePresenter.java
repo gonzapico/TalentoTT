@@ -28,7 +28,7 @@ public class GetTemperaturePresenter {
 
   private GetTemperatureView getTemperatureView;
   private Context mContext;
-  private boolean isFirstAttempt = false;
+  private boolean isFirstAttempt = true;
 
   @Inject public GetTemperaturePresenter(@Named("temperature") BaseUseCase useCaseGetGeonames,
       DomainWeatherMapper mapper) {

@@ -16,4 +16,6 @@ public interface GeonameDomainRepository {
 
   Observable<List<WeatherObservationModelDomain>> getWeatherObservations(
       BboxModelDomain coordenates, String user);
+
+  Observable<List<String>> getCitySearched();
 }

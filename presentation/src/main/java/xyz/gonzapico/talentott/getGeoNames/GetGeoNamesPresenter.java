@@ -107,6 +107,7 @@ public class GetGeoNamesPresenter {
 
     private void showErrorMessage(DefaultErrorBundle errorBundle) {
       String errorMessage = ErrorMessageFactory.create(mContext, errorBundle.getException());
+      mGetGeoNamesView.showErrorMessage(errorMessage);
       Log.e(TAG, errorMessage);
     }
   }

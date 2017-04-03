@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Named;
 import xyz.gonzapico.interactor.BaseUseCase;
+import xyz.gonzapico.interactor.GetCitySearched;
 import xyz.gonzapico.interactor.GetGeonames;
 import xyz.gonzapico.interactor.GetTemperature;
 import xyz.gonzapico.talentott.di.PerActivity;
@@ -26,5 +27,10 @@ import xyz.gonzapico.talentott.di.PerActivity;
   @Provides @PerActivity @Named("temperature") BaseUseCase provideGetTemperatureUseCase(
       GetTemperature getTemperature) {
     return getTemperature;
+  }
+
+  @Provides @PerActivity @Named("searchsSaved") BaseUseCase provideGetCitySearchedUseCase(
+      GetCitySearched getCitySearched) {
+    return getCitySearched;
   }
 }

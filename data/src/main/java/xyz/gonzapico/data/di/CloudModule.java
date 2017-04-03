@@ -1,8 +1,11 @@
 package xyz.gonzapico.data.di;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
@@ -19,6 +22,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import xyz.gonzapico.data.cloud.GeoNamesAPIService;
 
+import static android.content.Context.MODE_PRIVATE;
 import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
 /**
@@ -49,6 +53,12 @@ import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
   public CloudModule(String baseUrl, Context context) {
     this.mBaseUrl = baseUrl;
     this.context = context;
+  }
+
+  // Dagger will only look for methods annotated with @Provides
+  @Provides @Singleton SharedPreferences providesSharedPreferences() {
+    return context.getSharedPreferences("prueba", MODE_PRIVATE);
+    //return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
   }
 
   @Provides @Singleton HttpLoggingInterceptor provideHttpLoggingInterceptor() {

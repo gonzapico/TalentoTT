@@ -37,4 +37,9 @@ import xyz.gonzapico.repository.GeonameDomainRepository;
     return dataStore.weatherObservations(this.geoMapper.transformToCoordenates(coordenates), user)
         .map(this.geoMapper::transformToListOfWeatherObservations);
   }
+
+  @Override public Observable<List<String>> getCitySearched() {
+    final GeonameDataStore dataStore = this.geonameStoreFactory.createCloudDataStore();
+    return dataStore.citiesSearched();
+  }
 }

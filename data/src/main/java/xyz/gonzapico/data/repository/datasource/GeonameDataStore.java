@@ -1,6 +1,7 @@
 package xyz.gonzapico.data.repository.datasource;
 
 import io.reactivex.Observable;
+import java.util.List;
 import retrofit2.Response;
 import xyz.gonzapico.data.entity.Bbox;
 import xyz.gonzapico.data.entity.ResponseAPIGeonames;
@@ -25,4 +26,8 @@ public interface GeonameDataStore {
    * @return {@link WeatherObservations}
    */
   Observable<Response<WeatherObservations>> weatherObservations(Bbox coordenates, String user);
+
+  void saveCitySearched(String city);
+
+  Observable<List<String>> citiesSearched();
 }
