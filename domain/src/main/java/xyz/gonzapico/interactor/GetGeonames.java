@@ -24,19 +24,21 @@ public class GetGeonames extends BaseUseCase<List<GeonameModelDomain>, GetGeonam
   }
 
   @Override Observable<List<GeonameModelDomain>> buildUseCaseObservable(Params params) {
-    return mRepository.getGeonames(params.city);
+    return mRepository.getGeonames(params.city, params.user);
   }
 
   public static final class Params {
 
     private final String city;
+    private final String user;
 
-    private Params(String city) {
+    private Params(String city, String user) {
       this.city = city;
+      this.user = user;
     }
 
-    public static Params forCity(String cityName) {
-      return new Params(cityName);
+    public static Params forCityUser(String cityName, String user) {
+      return new Params(cityName, user);
     }
   }
 }

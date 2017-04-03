@@ -24,8 +24,8 @@ import xyz.gonzapico.repository.GeonameDomainRepository;
     this.geoMapper = geoMapper;
   }
 
-  @Override public Observable<List<GeonameModelDomain>> getGeonames(String city) {
+  @Override public Observable<List<GeonameModelDomain>> getGeonames(String city, String user) {
     final GeonameDataStore geonameDataStore = this.geonameStoreFactory.createCloudDataStore();
-    return geonameDataStore.geonames(city).map(this.geoMapper::transformToListOfGeonames);
+    return geonameDataStore.geonames(city, user).map(this.geoMapper::transformToListOfGeonames);
   }
 }

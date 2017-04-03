@@ -1,14 +1,19 @@
 package xyz.gonzapico.talentott.getGeoNames;
 
+import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
+import xyz.gonzapico.data.Config;
+import xyz.gonzapico.data.exception.GeonameNotFoundException;
 import xyz.gonzapico.exception.DefaultErrorBundle;
 import xyz.gonzapico.interactor.BaseUseCase;
 import xyz.gonzapico.interactor.DefaultObserver;
 import xyz.gonzapico.interactor.GetGeonames.Params;
 import xyz.gonzapico.model.GeonameModelDomain;
+import xyz.gonzapico.talentott.exception.CityEmptyException;
 import xyz.gonzapico.talentott.exception.ErrorMessageFactory;
 
 /**
@@ -22,13 +27,15 @@ public class GetGeoNamesPresenter {
   private BaseUseCase getGeoNamesUseCase;
 
   private GetGeoNamesView mGetGeoNamesView;
+  private Context mContext;
 
   @Inject public GetGeoNamesPresenter(@Named("geonames") BaseUseCase useCaseGetGeonames) {
     this.getGeoNamesUseCase = useCaseGetGeonames;
   }
 
-  public void onAttachView(GetGeoNamesView getGeoNamesView) {
+  public void onAttachView(GetGeoNamesView getGeoNamesView, Context context) {
     this.mGetGeoNamesView = getGeoNamesView;
+    this.mContext = context;
   }
 
   public void onViewDetached() {
@@ -37,10 +44,30 @@ public class GetGeoNamesPresenter {
   }
 
   public void getGeonames(String city) {
-    this.getGeoNamesUseCase.execute(new GetGeonamesSuscriber(), Params.forCity(city));
+    if (TextUtils.isEmpty(city)) {
+      String errorMessage = ErrorMessageFactory.create(mContext,
+          new DefaultErrorBundle(new CityEmptyException()).getException());
+      mGetGeoNamesView.showErrorMessage(errorMessage);
+      return;
+    }
+    this.getGeoNamesUseCase.execute(new GetGeonamesSuscriber(city),
+        Params.forCityUser(city, Config.FIRST_USER));
+  }
+
+  public void retryGetGeonames(String city) {
+    this.getGeoNamesUseCase.execute(new GetGeonamesSuscriber(city),
+        Params.forCityUser(city, Config.SECOND_USER));
   }
 
   private final class GetGeonamesSuscriber extends DefaultObserver<List<GeonameModelDomain>> {
+
+    private String mCity = "";
+    private boolean isFirstAttempt = true;
+
+    public GetGeonamesSuscriber(String city) {
+      mCity = city;
+    }
+
     public GetGeonamesSuscriber() {
 
     }
@@ -52,16 +79,25 @@ public class GetGeoNamesPresenter {
 
     @Override public void onError(Throwable e) {
       DefaultErrorBundle errorBundle = new DefaultErrorBundle((Exception) e);
-      showErrorMessage(errorBundle);
       Log.e(TAG, errorBundle.getErrorMessage() + " " + errorBundle.getException().toString());
+      if (isFirstAttempt && errorBundle.getException() instanceof GeonameNotFoundException) {
+        isFirstAttempt = false;
+        retryGetGeonames(mCity);
+      } else {
+        showErrorMessage(errorBundle);
+      }
     }
 
     @Override public void onNext(List<GeonameModelDomain> userDomainEntityList) {
       Log.d(TAG, userDomainEntityList.size() + "");
+      if (userDomainEntityList.isEmpty()) {
+        DefaultErrorBundle errorBundle = new DefaultErrorBundle(new GeonameNotFoundException());
+        showErrorMessage(errorBundle);
+      }
     }
 
     private void showErrorMessage(DefaultErrorBundle errorBundle) {
-      String errorMessage = ErrorMessageFactory.create(null, errorBundle.getException());
+      String errorMessage = ErrorMessageFactory.create(mContext, errorBundle.getException());
       Log.e(TAG, errorMessage);
     }
   }

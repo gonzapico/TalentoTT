@@ -45,13 +45,18 @@ public class GetGeonamesFragment extends BaseTMFragment implements GetGeoNamesVi
     this.getComponent(GeonameComponent.class).inject(this);
   }
 
-  @Override public void onAttach(Context context) {
-    super.onAttach(context);
+  @Override public void onResume() {
+    super.onResume();
+    geonamesPresenter.onAttachView(this, getActivity());
   }
 
   @Override public void onDestroy() {
     super.onDestroy();
 
     geonamesPresenter.onViewDetached();
+  }
+
+  @Override public void showErrorMessage(String errorMessage) {
+    showToastMessage(errorMessage);
   }
 }

@@ -1,6 +1,15 @@
 <resources>
   <string name="app_name">TalentoTT</string>
-  <string name="exception_message_no_connection">No hay Internet en estos momentos. Intentalo de nuevo más tarde.</string>
-  <string name="exception_message_generic">Ha ocurrido un error inesperado. Intentalo de nuevo más tarde</string>
+  <string name="exception_message_no_connection">No hay Internet en estos momentos. Intentalo de
+    nuevo más tarde.
+  </string>
+  <string name="exception_message_generic">Ha ocurrido un error inesperado. Intentalo de nuevo más
+    tarde
+  </string>
   <string name="exception_message_no_getgeonames">No hay geonames</string>
+  <string name="exception_message_empty_city">El campo ciudad no puede ser vacío</string>
+
+  <string name="city">Ciudad:</string>
+  <string name="search">Buscar</string>
+
 </resources>

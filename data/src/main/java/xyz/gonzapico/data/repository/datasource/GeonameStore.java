@@ -39,7 +39,9 @@ public class GeonameStore implements GeonameDataStore {
         // list of modules that are part of this component need to be created here too
         .cloudModule(new CloudModule(Config.API_URL_GEONAMES, this.context)).build().inject(this);
   }
-  @Override public Observable<Response<ResponseAPIGeonames>> geonames(String city) {
-    return restApi.geonames(city, Config.MAX_ROWS, Config.START_ROW, Config.LANGUAGE, Config.IS_NAME_REQUIRED, Config.STYLE, Config.FIRST_USER);
+
+  @Override public Observable<Response<ResponseAPIGeonames>> geonames(String city, String user) {
+    return restApi.geonames(city, Config.MAX_ROWS, Config.START_ROW, Config.LANGUAGE,
+        Config.IS_NAME_REQUIRED, Config.STYLE, user);
   }
 }

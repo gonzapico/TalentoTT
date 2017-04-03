@@ -10,5 +10,5 @@ import xyz.gonzapico.model.GeonameModelDomain;
 
 public interface GeonameDomainRepository {
 
-  Observable<List<GeonameModelDomain>> getGeonames(String city);
+  Observable<List<GeonameModelDomain>> getGeonames(String city, String user);
 }

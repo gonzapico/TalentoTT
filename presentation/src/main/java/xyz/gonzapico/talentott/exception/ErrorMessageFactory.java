@@ -44,6 +44,8 @@ public class ErrorMessageFactory {
       message = context.getString(R.string.exception_message_no_connection);
     } else if (exception instanceof GeonameNotFoundException) {
       message = context.getString(R.string.exception_message_no_getgeonames);
+    } else if (exception instanceof CityEmptyException) {
+      message = context.getString(R.string.exception_message_empty_city);
     }
 
     return message;

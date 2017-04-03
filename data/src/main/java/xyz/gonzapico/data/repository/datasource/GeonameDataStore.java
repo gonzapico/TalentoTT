@@ -14,6 +14,6 @@ public interface GeonameDataStore {
    * Get an {@link Observable} which will emit a {@link ResponseAPIGeonames}.
    * @return {@link ResponseAPIGeonames}
    */
-  Observable<Response<ResponseAPIGeonames>> geonames(String city);
+  Observable<Response<ResponseAPIGeonames>> geonames(String city, String user);
 
 }
