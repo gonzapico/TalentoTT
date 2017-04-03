@@ -12,6 +12,7 @@ import xyz.gonzapico.exception.DefaultErrorBundle;
 import xyz.gonzapico.interactor.BaseUseCase;
 import xyz.gonzapico.interactor.DefaultObserver;
 import xyz.gonzapico.interactor.GetGeonames.Params;
+import xyz.gonzapico.model.BboxModelDomain;
 import xyz.gonzapico.model.GeonameModelDomain;
 import xyz.gonzapico.talentott.exception.CityEmptyException;
 import xyz.gonzapico.talentott.exception.ErrorMessageFactory;
@@ -63,6 +64,7 @@ public class GetGeoNamesPresenter {
 
     private String mCity = "";
     private boolean isFirstAttempt = true;
+    private BboxModelDomain coordenatesToSearch = null;
 
     public GetGeonamesSuscriber(String city) {
       mCity = city;
@@ -75,6 +77,11 @@ public class GetGeoNamesPresenter {
     @Override public void onComplete() {
       super.onComplete();
       Log.d(TAG, "onComplete");
+      if (coordenatesToSearch != null) {
+        mGetGeoNamesView.showTemperature(coordenatesToSearch.getNorth(),
+            coordenatesToSearch.getSouth(), coordenatesToSearch.getEast(),
+            coordenatesToSearch.getWest());
+      }
     }
 
     @Override public void onError(Throwable e) {
@@ -93,6 +100,8 @@ public class GetGeoNamesPresenter {
       if (userDomainEntityList.isEmpty()) {
         DefaultErrorBundle errorBundle = new DefaultErrorBundle(new GeonameNotFoundException());
         showErrorMessage(errorBundle);
+      } else {
+        coordenatesToSearch = userDomainEntityList.get(0).getBbox();
       }
     }
 

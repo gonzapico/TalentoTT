@@ -9,8 +9,11 @@ import retrofit2.Response;
 import xyz.gonzapico.data.entity.Bbox;
 import xyz.gonzapico.data.entity.Geoname;
 import xyz.gonzapico.data.entity.ResponseAPIGeonames;
+import xyz.gonzapico.data.entity.WeatherObservation;
+import xyz.gonzapico.data.entity.WeatherObservations;
 import xyz.gonzapico.model.BboxModelDomain;
 import xyz.gonzapico.model.GeonameModelDomain;
+import xyz.gonzapico.model.WeatherObservationModelDomain;
 
 /**
  * Created by gfernandez on 25/02/17.
@@ -23,9 +26,8 @@ import xyz.gonzapico.model.GeonameModelDomain;
 
   public List<GeonameModelDomain> transformToListOfGeonames(
       Response<ResponseAPIGeonames> listResponse) {
-    List<GeonameModelDomain> listOfGeonames = null;
+    List<GeonameModelDomain> listOfGeonames = new ArrayList<>();
     if (listResponse.isSuccessful()) {
-      listOfGeonames = new ArrayList<>();
       listOfGeonames.addAll(transformToGeonameModelDomainList(listResponse.body().getGeonames()));
     }
     return listOfGeonames;
@@ -55,5 +57,41 @@ import xyz.gonzapico.model.GeonameModelDomain;
     bboxResult.setWest(bbox.getWest());
 
     return bboxResult;
+  }
+
+  public Bbox transformToCoordenates(BboxModelDomain coordenates) {
+    Bbox coordenatesResult = new Bbox();
+
+    coordenatesResult.setEast(coordenates.getEast());
+    coordenatesResult.setWest(coordenates.getWest());
+    coordenatesResult.setSouth(coordenates.getSouth());
+    coordenatesResult.setNorth(coordenates.getNorth());
+
+    return coordenatesResult;
+  }
+
+  public List<WeatherObservationModelDomain> transformToListOfWeatherObservations(
+      Response<WeatherObservations> weatherObservationsResponse) {
+    List<WeatherObservationModelDomain> listOfWeatherObservations = new ArrayList<>();
+    if (weatherObservationsResponse.isSuccessful()) {
+      listOfWeatherObservations.addAll(transformWeatherObservationList(
+          weatherObservationsResponse.body().getWeatherObservations()));
+    }
+    return listOfWeatherObservations;
+  }
+
+  private List<WeatherObservationModelDomain> transformWeatherObservationList(
+      List<WeatherObservation> weatherObservations) {
+    List<WeatherObservationModelDomain> resultList = new ArrayList<>();
+
+    for (WeatherObservation weatherObservation : weatherObservations) {
+      WeatherObservationModelDomain observationWeather = new WeatherObservationModelDomain();
+      observationWeather.setTemperature(weatherObservation.getTemperature());
+      observationWeather.setObservation(weatherObservation.getObservation());
+
+      resultList.add(observationWeather);
+    }
+
+    return resultList;
   }
 }

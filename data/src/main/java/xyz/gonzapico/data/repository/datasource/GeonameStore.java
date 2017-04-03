@@ -9,7 +9,9 @@ import xyz.gonzapico.data.Config;
 import xyz.gonzapico.data.cloud.GeoNamesAPIService;
 import xyz.gonzapico.data.di.CloudModule;
 import xyz.gonzapico.data.di.DaggerCloudComponent;
+import xyz.gonzapico.data.entity.Bbox;
 import xyz.gonzapico.data.entity.ResponseAPIGeonames;
+import xyz.gonzapico.data.entity.WeatherObservations;
 
 /**
  * Created by gfernandez on 25/02/17.
@@ -43,5 +45,9 @@ public class GeonameStore implements GeonameDataStore {
   @Override public Observable<Response<ResponseAPIGeonames>> geonames(String city, String user) {
     return restApi.geonames(city, Config.MAX_ROWS, Config.START_ROW, Config.LANGUAGE,
         Config.IS_NAME_REQUIRED, Config.STYLE, user);
+  }
+
+  @Override public Observable<Response<WeatherObservations>> weatherObservations(Bbox coordenates, String user) {
+    return restApi.weather(coordenates.getNorth(), coordenates.getSouth(), coordenates.getEast(), coordenates.getWest(), user);
   }
 }
