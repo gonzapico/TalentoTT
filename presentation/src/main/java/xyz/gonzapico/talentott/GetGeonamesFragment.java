@@ -14,6 +14,14 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import javax.inject.Inject;
 import xyz.gonzapico.talentott.di.components.GeonameComponent;
@@ -22,7 +30,6 @@ import xyz.gonzapico.talentott.getGeoNames.GetGeoNamesView;
 import xyz.gonzapico.talentott.getSavedSearchs.GetSavedSearchsPresenter;
 import xyz.gonzapico.talentott.getSavedSearchs.GetSavedSearchsView;
 import xyz.gonzapico.talentott.getTemperature.City;
-import xyz.gonzapico.talentott.getTemperature.Coordenates;
 import xyz.gonzapico.talentott.getTemperature.GetTemperaturePresenter;
 import xyz.gonzapico.talentott.getTemperature.GetTemperatureView;
 
@@ -40,6 +47,9 @@ public class GetGeonamesFragment extends BaseTMFragment
   @BindView(R.id.tvTemperature) TextView tvTemperature;
   @BindView(R.id.tvObservations) TextView tvObservations;
   @BindView(R.id.infoZone) LinearLayout llInfoZone;
+  private com.google.android.gms.maps.MapFragment mapView;
+  private GoogleMap mGoogleMap;
+  private View mView;
 
   public GetGeonamesFragment() {
     setRetainInstance(true);
@@ -68,7 +78,8 @@ public class GetGeonamesFragment extends BaseTMFragment
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    return inflater.inflate(R.layout.fragment_home, container, false);
+    mView = inflater.inflate(R.layout.fragment_home, container, false);
+    return mView;
   }
 
   @Override public void onCreate(Bundle savedInstanceState) {
@@ -113,12 +124,35 @@ public class GetGeonamesFragment extends BaseTMFragment
     tvCityName.setText(cityName.toUpperCase());
   }
 
-  private void hideKeyboard(){
+  private void hideKeyboard() {
     // Check if no view has focus:
     View view = etLocation.getRootView();
     if (view != null) {
-      InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+      InputMethodManager imm =
+          (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
       imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+  }
+
+  @Override public void showMap(final City city) {
+    mapView = MapFragment.newInstance();
+    ((BaseTMActivity) getActivity()).addFragment(R.id.mapView, mapView);
+    mapView.getMapAsync(new OnMapReadyCallback() {
+      @Override public void onMapReady(GoogleMap googleMap) {
+        LatLng latLng =
+            new LatLng(Double.parseDouble(city.getLat()), Double.parseDouble(city.getLng()));
+        mGoogleMap = googleMap;
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+
+        mGoogleMap.addMarker(new MarkerOptions().icon(
+            BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round))
+            .anchor(0.0f, 1.0f)
+            .position(latLng));
+        // Updates the location and zoom of the MapView
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
+        mGoogleMap.moveCamera(cameraUpdate);
+      }
+    });
   }
 }

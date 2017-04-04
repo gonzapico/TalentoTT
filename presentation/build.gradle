@@ -66,6 +66,7 @@ dependencies {
   compile presentationDependencies.rxJava
   compile presentationDependencies.rxAndroid
   provided presentationDependencies.javaxAnnotation
+  compile presentationDependencies.googleMaps
 
   compile presentationDependencies.butterknife
   apt presentationDependencies.butterknifeCompiler

@@ -92,6 +92,7 @@ public class GetTemperaturePresenter {
         getTemperatureView.showTemperature(
             weatherObservationModelDomainList.get(0).getTemperature());
         getTemperatureView.showCityName(mCity.getName());
+        getTemperatureView.showMap(mCity);
       }
     }
 

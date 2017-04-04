@@ -12,4 +12,6 @@ public interface GetTemperatureView {
   void showErrorMessage(String errorMsg);
 
   void showCityName(String cityName);
+
+  void showMap(City city);
 }

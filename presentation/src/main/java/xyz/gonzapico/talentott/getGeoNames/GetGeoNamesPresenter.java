@@ -114,7 +114,7 @@ public class GetGeoNamesPresenter {
             cityToSearch.setCoordenates(
                 new Coordenates(bboxModelDomain.getNorth(), bboxModelDomain.getSouth(),
                     bboxModelDomain.getEast(), bboxModelDomain.getWest()));
-            cityToSearch.setLat(userDomainEntityList.get(indexOfArray).getLat());
+            cityToSearch.setLng(userDomainEntityList.get(indexOfArray).getLng());
             cityToSearch.setLat(userDomainEntityList.get(indexOfArray).getLat());
           }
           indexOfArray++;
