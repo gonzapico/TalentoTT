@@ -1,10 +1,12 @@
 package xyz.gonzapico.talentott;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -57,6 +59,7 @@ public class GetGeonamesFragment extends BaseTMFragment
   @OnClick(R.id.btnSearchLocation) void searchLocation() {
     geonamesPresenter.getGeonames(etLocation.getText().toString());
     llInfoZone.setVisibility(View.GONE);
+    hideKeyboard();
   }
 
   @OnFocusChange(R.id.etLocation) void getCache() {
@@ -108,5 +111,14 @@ public class GetGeonamesFragment extends BaseTMFragment
 
   @Override public void showCityName(String cityName) {
     tvCityName.setText(cityName.toUpperCase());
+  }
+
+  private void hideKeyboard(){
+    // Check if no view has focus:
+    View view = etLocation.getRootView();
+    if (view != null) {
+      InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+      imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
   }
 }
