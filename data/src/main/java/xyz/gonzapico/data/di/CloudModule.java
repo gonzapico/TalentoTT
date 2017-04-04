@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dagger.Module;
@@ -57,8 +56,7 @@ import static okhttp3.logging.HttpLoggingInterceptor.Level.BODY;
 
   // Dagger will only look for methods annotated with @Provides
   @Provides @Singleton SharedPreferences providesSharedPreferences() {
-    return context.getSharedPreferences("prueba", MODE_PRIVATE);
-    //return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    return context.getApplicationContext().getSharedPreferences("tt", MODE_PRIVATE);
   }
 
   @Provides @Singleton HttpLoggingInterceptor provideHttpLoggingInterceptor() {

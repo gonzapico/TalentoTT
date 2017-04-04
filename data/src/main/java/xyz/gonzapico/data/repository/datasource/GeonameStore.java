@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import io.reactivex.Observable;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.inject.Inject;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -61,24 +59,20 @@ public class GeonameStore implements GeonameDataStore {
   }
 
   @Override public void saveCitySearched(String city) {
-    Set<String> cities = sharedPreferences.getStringSet(Config.CITIES_CACHE, null);
+    StringBuilder sb = new StringBuilder();
 
-    if (cities == null) {
-      cities = new HashSet<String>();
-    }
-    cities.add(city);
-    sharedPreferences.edit().putStringSet(Config.CITIES_CACHE, cities);
-    sharedPreferences.edit().commit();
+    String citiesCache = sharedPreferences.getString(Config.CITIES_CACHE, "");
+    sb.append(citiesCache);
+    sb.append(city);
+    sb.append(",");
+    sharedPreferences.edit().putString(Config.CITIES_CACHE, sb.toString());
+    sharedPreferences.edit().apply();
   }
 
   @Override public Observable<List<String>> citiesSearched() {
-    Set<String> cities = sharedPreferences.getStringSet(Config.CITIES_CACHE, null);
+    String cities = sharedPreferences.getString(Config.CITIES_CACHE, "");
 
-    if (cities == null) {
-      cities = new HashSet<String>();
-    }
-    String[] citiesArray = cities.toArray(new String[cities.size()]);
-
+    String[] citiesArray = cities.split(",");
     return Observable.fromArray(Arrays.asList(citiesArray));
   }
 }

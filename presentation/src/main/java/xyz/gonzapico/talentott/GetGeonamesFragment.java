@@ -8,7 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class GetGeonamesFragment extends BaseTMFragment
   @Inject GetSavedSearchsPresenter savedSearchsPresenter;
   @Inject GetGeoNamesPresenter geonamesPresenter;
   @Inject GetTemperaturePresenter temperaturePresenter;
-  @BindView(R.id.etLocation) EditText etLocation;
+  @BindView(R.id.etLocation) AutoCompleteTextView etLocation;
   @BindView(R.id.pbTemperature) ProgressBar pbTemperature;
   @BindView(R.id.tvCityName) TextView tvCityName;
   @BindView(R.id.tvTemperature) TextView tvTemperature;
@@ -69,6 +70,11 @@ public class GetGeonamesFragment extends BaseTMFragment
     for (String city : suggestionList) {
       Log.d("city", city);
     }
+
+    ArrayAdapter<String> adapter =
+        new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line,
+            (String[]) suggestionList.toArray());
+    etLocation.setAdapter(adapter);
   }
 
   @OnClick(R.id.btnSearchLocation) void searchLocation() {
@@ -79,6 +85,11 @@ public class GetGeonamesFragment extends BaseTMFragment
 
   @OnFocusChange(R.id.etLocation) void getCache() {
     savedSearchsPresenter.getSavedSearchs();
+  }
+
+  @OnClick(R.id.ivClearText) void clearTextAndHideResults() {
+    etLocation.setText("");
+    llInfoZone.setVisibility(View.GONE);
   }
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
