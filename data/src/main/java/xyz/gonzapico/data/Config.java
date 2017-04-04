@@ -15,4 +15,6 @@ public class Config {
 
   public static final String FIRST_USER = "ilgeonamessample";
   public static final String SECOND_USER = "demo";
+
+  public static final String CITIES_CACHE = "cities_cache";
 }

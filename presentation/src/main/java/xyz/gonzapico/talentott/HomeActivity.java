@@ -24,4 +24,7 @@ public class HomeActivity extends BaseTMActivity {
     return R.layout.activity_home;
   }
 
+  @Override public void onBackPressed() {
+    finish();
+  }
 }

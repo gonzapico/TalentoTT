@@ -12,9 +12,12 @@ import xyz.gonzapico.exception.DefaultErrorBundle;
 import xyz.gonzapico.interactor.BaseUseCase;
 import xyz.gonzapico.interactor.DefaultObserver;
 import xyz.gonzapico.interactor.GetGeonames.Params;
+import xyz.gonzapico.model.BboxModelDomain;
 import xyz.gonzapico.model.GeonameModelDomain;
 import xyz.gonzapico.talentott.exception.CityEmptyException;
 import xyz.gonzapico.talentott.exception.ErrorMessageFactory;
+import xyz.gonzapico.talentott.getTemperature.City;
+import xyz.gonzapico.talentott.getTemperature.Coordenates;
 
 /**
  * Created by gfernandez on 3/04/17.
@@ -63,6 +66,7 @@ public class GetGeoNamesPresenter {
 
     private String mCity = "";
     private boolean isFirstAttempt = true;
+    private City cityToSearch = null;
 
     public GetGeonamesSuscriber(String city) {
       mCity = city;
@@ -75,6 +79,9 @@ public class GetGeoNamesPresenter {
     @Override public void onComplete() {
       super.onComplete();
       Log.d(TAG, "onComplete");
+      if (cityToSearch != null) {
+        mGetGeoNamesView.showTemperature(cityToSearch);
+      }
     }
 
     @Override public void onError(Throwable e) {
@@ -93,11 +100,31 @@ public class GetGeoNamesPresenter {
       if (userDomainEntityList.isEmpty()) {
         DefaultErrorBundle errorBundle = new DefaultErrorBundle(new GeonameNotFoundException());
         showErrorMessage(errorBundle);
+      } else {
+        boolean foundCity = false;
+        int indexOfArray = 0;
+        while (!foundCity) {
+          if (userDomainEntityList.get(indexOfArray)
+              .getName()
+              .equalsIgnoreCase(mCity.toLowerCase())) {
+            foundCity = true;
+            cityToSearch = new City();
+            cityToSearch.setName(mCity);
+            BboxModelDomain bboxModelDomain = userDomainEntityList.get(indexOfArray).getBbox();
+            cityToSearch.setCoordenates(
+                new Coordenates(bboxModelDomain.getNorth(), bboxModelDomain.getSouth(),
+                    bboxModelDomain.getEast(), bboxModelDomain.getWest()));
+            cityToSearch.setLng(userDomainEntityList.get(indexOfArray).getLng());
+            cityToSearch.setLat(userDomainEntityList.get(indexOfArray).getLat());
+          }
+          indexOfArray++;
+        }
       }
     }
 
     private void showErrorMessage(DefaultErrorBundle errorBundle) {
       String errorMessage = ErrorMessageFactory.create(mContext, errorBundle.getException());
+      mGetGeoNamesView.showErrorMessage(errorMessage);
       Log.e(TAG, errorMessage);
     }
   }
