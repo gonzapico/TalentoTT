@@ -22,6 +22,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
@@ -152,6 +153,7 @@ public class GetGeonamesFragment extends BaseTMFragment
   }
 
   @Override public void showWeatherObservations(List<Station> stationList) {
+    LatLngBounds.Builder builder = new LatLngBounds.Builder();
     for (Station station : stationList) {
       if (station.getLatLng() != null) {
         mGoogleMap.setOnMarkerClickListener(this);
@@ -159,8 +161,13 @@ public class GetGeonamesFragment extends BaseTMFragment
             new MarkerOptions().position(station.getLatLng()).title(station.getName());
         Marker markerCity = mGoogleMap.addMarker(marker);
         markerCity.setTag(station);
+        builder.include(marker.getPosition());
       }
     }
+    LatLngBounds bounds = builder.build();
+    int padding = 0; // offset from edges of the map in pixels
+    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+    mGoogleMap.animateCamera(cu);
   }
 
   @Override public void onMapReady(GoogleMap googleMap) {
