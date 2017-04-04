@@ -90,6 +90,9 @@ import xyz.gonzapico.model.WeatherObservationModelDomain;
       WeatherObservationModelDomain observationWeather = new WeatherObservationModelDomain();
       observationWeather.setTemperature(weatherObservation.getTemperature());
       observationWeather.setObservation(weatherObservation.getObservation());
+      observationWeather.setLat(weatherObservation.getLat());
+      observationWeather.setLng(weatherObservation.getLng());
+      observationWeather.setStationName(weatherObservation.getStationName());
 
       resultList.add(observationWeather);
     }

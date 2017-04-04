@@ -2,6 +2,7 @@ package xyz.gonzapico.talentott;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,12 +34,14 @@ import xyz.gonzapico.talentott.getSavedSearchs.GetSavedSearchsView;
 import xyz.gonzapico.talentott.getTemperature.City;
 import xyz.gonzapico.talentott.getTemperature.GetTemperaturePresenter;
 import xyz.gonzapico.talentott.getTemperature.GetTemperatureView;
+import xyz.gonzapico.talentott.getTemperature.Station;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class GetGeonamesFragment extends BaseTMFragment
-    implements GetGeoNamesView, GetTemperatureView, GetSavedSearchsView {
+    implements GetGeoNamesView, GetTemperatureView, GetSavedSearchsView, OnMapReadyCallback,
+    GoogleMap.OnMarkerClickListener {
   @Inject GetSavedSearchsPresenter savedSearchsPresenter;
   @Inject GetGeoNamesPresenter geonamesPresenter;
   @Inject GetTemperaturePresenter temperaturePresenter;
@@ -79,6 +83,9 @@ public class GetGeonamesFragment extends BaseTMFragment
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     mView = inflater.inflate(R.layout.fragment_home, container, false);
+    mapView = MapFragment.newInstance();
+    ((BaseTMActivity) getActivity()).addFragment(R.id.mapView, mapView);
+    mapView.getMapAsync(this);
     return mView;
   }
 
@@ -135,24 +142,43 @@ public class GetGeonamesFragment extends BaseTMFragment
   }
 
   @Override public void showMap(final City city) {
-    mapView = MapFragment.newInstance();
-    ((BaseTMActivity) getActivity()).addFragment(R.id.mapView, mapView);
-    mapView.getMapAsync(new OnMapReadyCallback() {
-      @Override public void onMapReady(GoogleMap googleMap) {
-        LatLng latLng =
-            new LatLng(Double.parseDouble(city.getLat()), Double.parseDouble(city.getLng()));
-        mGoogleMap = googleMap;
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+    LatLng latLng =
+        new LatLng(Double.parseDouble(city.getLat()), Double.parseDouble(city.getLng()));
+    mGoogleMap.addMarker(new MarkerOptions().icon(
+        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)).position(latLng));
+    // Updates the location and zoom of the MapView
+    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 1f);
+    mGoogleMap.moveCamera(cameraUpdate);
+  }
 
-        mGoogleMap.addMarker(new MarkerOptions().icon(
-            BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round))
-            .anchor(0.0f, 1.0f)
-            .position(latLng));
-        // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(latLng);
-        mGoogleMap.moveCamera(cameraUpdate);
+  @Override public void showWeatherObservations(List<Station> stationList) {
+    for (Station station : stationList) {
+      if (station.getLatLng() != null) {
+        mGoogleMap.setOnMarkerClickListener(this);
+        MarkerOptions marker =
+            new MarkerOptions().position(station.getLatLng()).title(station.getName());
+        Marker markerCity = mGoogleMap.addMarker(marker);
+        markerCity.setTag(station);
       }
-    });
+    }
+  }
+
+  @Override public void onMapReady(GoogleMap googleMap) {
+    mGoogleMap = googleMap;
+    mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+    mGoogleMap.getUiSettings().setZoomControlsEnabled(true);
+  }
+
+  @Override public boolean onMarkerClick(Marker marker) {
+    Station currentStation = ((Station) marker.getTag());
+    if (currentStation != null) {
+      String currentTemperature = currentStation.getCurrentTemperature();
+      String currentName = currentStation.getName();
+      if (!TextUtils.isEmpty(currentTemperature)) showTemperature(currentTemperature);
+      if (!TextUtils.isEmpty(currentName)) {
+        showCityName(currentName);
+      }
+    }
+    return false;
   }
 }
