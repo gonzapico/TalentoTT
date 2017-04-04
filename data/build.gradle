@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'me.tatarka:gradle-retrolambda:3.2.3'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+  }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+  compileSdkVersion rootProject.ext.androidCompileSdkVersion
+  buildToolsVersion rootProject.ext.androidBuildToolsVersion
+  defaultConfig {
+    minSdkVersion rootProject.ext.androidMinSdkVersion
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+}
+
+dependencies {
+
+  compile project(':domain')
+
+  def dataDependencies = rootProject.ext.dataDependencies
+
+  apt dataDependencies.daggerCompiler
+  provided dataDependencies.javaxAnnotation
+  compile dataDependencies.retrofit
+  compile dataDependencies.retrofitConverter
+  compile dataDependencies.dagger
+  compile dataDependencies.okHttp
+  compile dataDependencies.gson
+  compile dataDependencies.rxJava
+  compile dataDependencies.rxAndroid
+  compile dataDependencies.androidAnnotations
+  compile dataDependencies.retrofitAdapterRx
+  compile dataDependencies.okHttpLogging
+  compile dataDependencies.glassfishJavax
+
+  def testDependencies = rootProject.ext.dataTestDependencies
+
+  testCompile testDependencies.junit
+  testCompile testDependencies.assertj
+  testCompile testDependencies.mockito
+  testCompile testDependencies.robolectric
+}
+
