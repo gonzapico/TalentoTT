@@ -46,20 +46,20 @@ public class GetTemperaturePresenter {
     this.getTemperatureUseCase.dispose();
   }
 
-  public void getTemperature(Coordenates coordenates) {
+  public void getTemperature(City city) {
     String username = isFirstAttempt ? Config.FIRST_USER : Config.SECOND_USER;
-    this.getTemperatureUseCase.execute(new GetTemperatureSuscriber(coordenates),
-        GetTemperature.Params.forCoordenatesUsername(mapper.transformToBbox(coordenates),
+    this.getTemperatureUseCase.execute(new GetTemperatureSuscriber(city),
+        GetTemperature.Params.forCoordenatesUsername(mapper.transformToBbox(city.getCoordenates()),
             username));
   }
 
   private final class GetTemperatureSuscriber
       extends DefaultObserver<List<WeatherObservationModelDomain>> {
 
-    private Coordenates mCoordenates = null;
+    private City mCity = null;
 
-    public GetTemperatureSuscriber(Coordenates coodenates) {
-      mCoordenates = coodenates;
+    public GetTemperatureSuscriber(City city) {
+      mCity = city;
     }
 
     public GetTemperatureSuscriber() {
@@ -76,7 +76,7 @@ public class GetTemperaturePresenter {
       Log.e(TAG, errorBundle.getErrorMessage() + " " + errorBundle.getException().toString());
       if (isFirstAttempt) {
         isFirstAttempt = !isFirstAttempt;
-        getTemperature(mCoordenates);
+        getTemperature(mCity);
       }
     }
 
@@ -91,12 +91,14 @@ public class GetTemperaturePresenter {
             weatherObservationModelDomainList.get(0).getObservation());
         getTemperatureView.showTemperature(
             weatherObservationModelDomainList.get(0).getTemperature());
+        getTemperatureView.showCityName(mCity.getName());
       }
     }
 
     private void showErrorMessage(DefaultErrorBundle errorBundle) {
       String errorMessage = ErrorMessageFactory.create(mContext, errorBundle.getException());
       Log.e(TAG, errorMessage);
+      getTemperatureView.showErrorMessage(errorMessage);
     }
   }
 }

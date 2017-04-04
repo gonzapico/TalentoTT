@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
@@ -17,6 +19,7 @@ import xyz.gonzapico.talentott.getGeoNames.GetGeoNamesPresenter;
 import xyz.gonzapico.talentott.getGeoNames.GetGeoNamesView;
 import xyz.gonzapico.talentott.getSavedSearchs.GetSavedSearchsPresenter;
 import xyz.gonzapico.talentott.getSavedSearchs.GetSavedSearchsView;
+import xyz.gonzapico.talentott.getTemperature.City;
 import xyz.gonzapico.talentott.getTemperature.Coordenates;
 import xyz.gonzapico.talentott.getTemperature.GetTemperaturePresenter;
 import xyz.gonzapico.talentott.getTemperature.GetTemperatureView;
@@ -26,17 +29,15 @@ import xyz.gonzapico.talentott.getTemperature.GetTemperatureView;
  */
 public class GetGeonamesFragment extends BaseTMFragment
     implements GetGeoNamesView, GetTemperatureView, GetSavedSearchsView {
-  @Override public void showSuggestions(List<String> suggestionList) {
-    for (String city : suggestionList){
-      Log.d("city", city);
-    }
-  }
-
   @Inject GetSavedSearchsPresenter savedSearchsPresenter;
   @Inject GetGeoNamesPresenter geonamesPresenter;
   @Inject GetTemperaturePresenter temperaturePresenter;
   @BindView(R.id.etLocation) EditText etLocation;
   @BindView(R.id.pbTemperature) ProgressBar pbTemperature;
+  @BindView(R.id.tvCityName) TextView tvCityName;
+  @BindView(R.id.tvTemperature) TextView tvTemperature;
+  @BindView(R.id.tvObservations) TextView tvObservations;
+  @BindView(R.id.infoZone) LinearLayout llInfoZone;
 
   public GetGeonamesFragment() {
     setRetainInstance(true);
@@ -47,11 +48,18 @@ public class GetGeonamesFragment extends BaseTMFragment
     return fragment;
   }
 
-  @OnClick(R.id.btnSearchLocation) void searchLocation() {
-    geonamesPresenter.getGeonames(etLocation.getText().toString());
+  @Override public void showSuggestions(List<String> suggestionList) {
+    for (String city : suggestionList) {
+      Log.d("city", city);
+    }
   }
 
-  @OnFocusChange(R.id.etLocation) void getCache(){
+  @OnClick(R.id.btnSearchLocation) void searchLocation() {
+    geonamesPresenter.getGeonames(etLocation.getText().toString());
+    llInfoZone.setVisibility(View.GONE);
+  }
+
+  @OnFocusChange(R.id.etLocation) void getCache() {
     savedSearchsPresenter.getSavedSearchs();
   }
 
@@ -81,18 +89,24 @@ public class GetGeonamesFragment extends BaseTMFragment
 
   @Override public void showErrorMessage(String errorMessage) {
     showToastMessage(errorMessage);
+    llInfoZone.setVisibility(View.GONE);
   }
 
-  @Override public void showTemperature(Double east, Double north, Double west, Double south) {
-    Coordenates coordenates = new Coordenates(north, south, east, west);
-    temperaturePresenter.getTemperature(coordenates);
+  @Override public void showTemperature(City city) {
+    temperaturePresenter.getTemperature(city);
+    llInfoZone.setVisibility(View.VISIBLE);
   }
 
   @Override public void showTemperature(String temperature) {
     pbTemperature.setProgress(Integer.parseInt(temperature));
+    tvTemperature.setText(temperature);
   }
 
   @Override public void showObservation(String observation) {
+    tvObservations.setText(observation);
+  }
 
+  @Override public void showCityName(String cityName) {
+    tvCityName.setText(cityName.toUpperCase());
   }
 }

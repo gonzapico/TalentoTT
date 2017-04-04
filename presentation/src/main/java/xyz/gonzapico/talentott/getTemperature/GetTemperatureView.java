@@ -8,4 +8,8 @@ public interface GetTemperatureView {
   void showTemperature(String temperature);
 
   void showObservation(String observation);
+
+  void showErrorMessage(String errorMsg);
+
+  void showCityName(String cityName);
 }

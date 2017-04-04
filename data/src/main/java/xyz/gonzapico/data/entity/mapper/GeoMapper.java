@@ -39,6 +39,8 @@ import xyz.gonzapico.model.WeatherObservationModelDomain;
     for (Geoname geoname : geonames) {
       GeonameModelDomain geonameModelDomain = new GeonameModelDomain();
       geonameModelDomain.setName(geoname.getName());
+      geonameModelDomain.setLat(geoname.getLat());
+      geonameModelDomain.setLng(geoname.getLng());
       try {
         geonameModelDomain.setBbox(transformBbox(geoname.getBbox()));
       } catch (Exception e) {
